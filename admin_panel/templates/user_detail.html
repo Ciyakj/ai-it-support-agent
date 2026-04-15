@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}User Details - IT Admin Panel{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>{{ user.email }}</h2>
+    <a href="/users" class="btn secondary">Back to Users</a>
+</div>
+
+<div class="card">
+    <h3>User Information</h3>
+    <table>
+        <tr>
+            <td><strong>Email:</strong></td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td><strong>Name:</strong></td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>Status:</strong></td>
+            <td><span class="status {{ user.status }}">{{ user.status.upper() }}</span></td>
+        </tr>
+        <tr>
+            <td><strong>Temporary Password:</strong></td>
+            <td><code>{{ user.password }}</code></td>
+        </tr>
+        <tr>
+            <td><strong>Created:</strong></td>
+            <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Assigned Licenses</h3>
+    {% if user.licenses %}
+    <table>
+        <thead>
+            <tr>
+                <th>License Type</th>
+                <th>Status</th>
+                <th>Assigned Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for license in user.licenses %}
+            <tr>
+                <td>{{ license.license_type }}</td>
+                <td><span class="status {{ license.status }}">{{ license.status.upper() }}</span></td>
+                <td>{{ license.assigned_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No licenses assigned. <a href="/licenses/assign">Assign a license</a></p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Admin Actions</h3>
+    <div class="action-buttons">
+        <button onclick="resetPassword({{ user.id }})" class="success">Reset Password</button>
+        {% if user.status == 'locked' %}
+        <button onclick="unlockUser({{ user.id }})" class="success">Unlock User</button>
+        {% endif %}
+        {% if user.status == 'active' %}
+        <button onclick="deactivateUser({{ user.id }})" class="danger">Deactivate User</button>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function resetPassword(userId) {
+    if (confirm('Reset password for this user?')) {
+        fetch(`/users/${userId}/reset-password`, {method: 'POST'})
+            .then(r => r.json())
+            .then(data => {
+                alert('Password reset! New temporary password: ' + data.temporary_password);
+                location.reload();
+            });
+    }
+}
+
+function unlockUser(userId) {
+    if (confirm('Unlock this user?')) {
+        fetch(`/users/${userId}/unlock`, {method: 'POST'})
+            .then(r => r.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            });
+    }
+}
+
+function deactivateUser(userId) {
+    if (confirm('Deactivate this user?')) {
+        fetch(`/users/${userId}/deactivate`, {method: 'POST'})
+            .then(r => r.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            });
+    }
+}
+</script>
+{% endblock %}

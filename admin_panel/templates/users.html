@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Users - IT Admin Panel{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Users Management</h2>
+    <a href="/users/create" class="btn">+ Create New User</a>
+</div>
+
+<div class="card">
+    {% if users %}
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><strong>{{ user.email }}</strong></td>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td><span class="status {{ user.status }}">{{ user.status.upper() }}</span></td>
+                <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <a href="/users/{{ user.id }}" class="btn secondary" style="padding: 5px 10px; font-size: 12px;">View</a>
+                    <a href="/users/{{ user.id }}/reset-password" class="btn secondary" style="padding: 5px 10px; font-size: 12px; background-color: #f59e0b;">Reset Password</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No users found.</p>
+    {% endif %}
+</div>
+{% endblock %}

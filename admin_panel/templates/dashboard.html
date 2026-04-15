@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - IT Admin Panel{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="stats">
+    <div class="stat-card">
+        <div class="number">{{ total_users }}</div>
+        <div class="label">Total Users</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ active_users }}</div>
+        <div class="label">Active Users</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ licenses_count }}</div>
+        <div class="label">Licenses Assigned</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Quick Actions</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <a href="/users" class="btn">View All Users</a>
+        <a href="/users/create" class="btn">Create New User</a>
+        <a href="/licenses" class="btn">Manage Licenses</a>
+        <a href="/licenses/assign" class="btn">Assign License</a>
+    </div>
+</div>
+
+<div class="card">
+    <h2>System Information</h2>
+    <table>
+        <tr>
+            <td><strong>Admin Panel Version:</strong></td>
+            <td>1.0.0</td>
+        </tr>
+        <tr>
+            <td><strong>Database:</strong></td>
+            <td>SQLite (admin_panel.db)</td>
+        </tr>
+        <tr>
+            <td><strong>Status:</strong></td>
+            <td><span class="status active">Operational</span></td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
